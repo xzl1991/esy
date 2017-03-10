@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd">
+	
+	<context:annotation-config></context:annotation-config>
+	<context:component-scan base-package="com.esy">  <!-- 扫描com文件夹下@component 除去@controller -->
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations" value="classpath:jdbc.properties"></property>
+	</bean>
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass">
+			<value>${jdbc.driverClass}</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>${jdbc.url}</value>
+		</property>
+		<property name="user">
+			<value>${jdbc.user}</value>
+		</property>
+		<property name="password">
+			<value>${jdbc.password}</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>200</value>
+		</property>
+		<property name="minPoolSize">
+			<value>1</value>
+		</property>
+		<property name="initialPoolSize">
+			<value>2</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>60</value>
+		</property>
+		<property name="autoCommitOnClose">
+			<value>false</value>
+		</property>  
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<tx:annotation-driven />
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="mapperLocations" value="classpath:com/*/dao/*/*.xml" />
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<!-- 将映射接口转换为 spring的 bean  -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.*.dao.impl" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+	
+	
+	<bean id="myShiroRealm" class="com.esy.utils.MyRealm1">
+	</bean>
+
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="myShiroRealm"></property>
+	</bean>
+		<!-- 自带的权限验证 -->
+	<bean name="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/login/fsindex" />
+		<property name="filterChainDefinitions">
+			<value>
+				/*/loginpage = authc <!-- authc 表示需要认证才能访问的页面 -->
+				/home = authc, perms[/home]  <!-- perms 表示需要该权限才能访问的页面 -->
+			</value>
+		</property>
+	</bean>
+	<!-- 主键生成 -->
+		<!-- 表名  
+			# 创建表并修改 引擎
+			create table t_user_id(sequence_id int) 
+			 ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			insert into t_user_id values(0);
+			   查看表结构和引擎类型
+			SHOW TABLE STATUS FROM esy WHERE NAME='t_user_id'; 
+			alter table t_user_id engine = MyIsAM ;
+		-->
+	<bean id="incre" class="org.springframework.jdbc.support.incrementer.MySQLMaxValueIncrementer" 
+		p:incrementerName="t_user_id"
+		p:columnName="sequence_id"
+		p:cacheSize="10"
+		p:dataSource-ref="dataSource" />
+</beans>

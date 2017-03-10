@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.esy.dao.impl.ProviderMapper" >
+  <resultMap id="BaseResultMap" type="com.esy.entity.Provider" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="provider_code" property="providerCode" jdbcType="VARCHAR" />
+    <result column="provider_name" property="providerName" jdbcType="VARCHAR" />
+    <result column="provider_type" property="providerType" jdbcType="VARCHAR" />
+    <result column="provider_address" property="providerAddress" jdbcType="VARCHAR" />
+    <result column="provider_phone1" property="providerPhone1" jdbcType="VARCHAR" />
+    <result column="provider_phone2" property="providerPhone2" jdbcType="VARCHAR" />
+    <result column="provider_phone3" property="providerPhone3" jdbcType="VARCHAR" />
+    <result column="create_name" property="createName" jdbcType="VARCHAR" />
+    <result column="create_code" property="createCode" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+    <result column="update_code" property="updateCode" jdbcType="VARCHAR" />
+    <result column="update_name" property="updateName" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, provider_code, provider_name, provider_type, provider_address, provider_phone1, 
+    provider_phone2, provider_phone3, create_name, create_code, create_time, update_code, 
+    update_name, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_provider
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_provider
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.esy.entity.Provider" >
+    insert into t_provider (id, provider_code, provider_name, 
+      provider_type, provider_address, provider_phone1, 
+      provider_phone2, provider_phone3, create_name, 
+      create_code, create_time, update_code, 
+      update_name, update_time)
+    values (#{id,jdbcType=VARCHAR}, #{providerCode,jdbcType=VARCHAR}, #{providerName,jdbcType=VARCHAR}, 
+      #{providerType,jdbcType=VARCHAR}, #{providerAddress,jdbcType=VARCHAR}, #{providerPhone1,jdbcType=VARCHAR}, 
+      #{providerPhone2,jdbcType=VARCHAR}, #{providerPhone3,jdbcType=VARCHAR}, #{createName,jdbcType=VARCHAR}, 
+      #{createCode,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, #{updateCode,jdbcType=VARCHAR}, 
+      #{updateName,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR})
+  </insert>
+
+   <select id="selectcount" resultType="int" parameterType="java.util.Map">
+		select count(1) from t_provider where 1 = 1
+	<if test="providerCode != null and providerCode != ''" >
+       and provider_code like CONCAT('%',#{providerCode},'%')
+    </if>
+    <if test="providerName != null  and providerName != ''" >
+      and provider_name like CONCAT('%',#{providerName},'%')
+    </if>
+    <if test="providerType != null  and providerType != ''" >
+      and provider_type like CONCAT('%',#{providerType},'%')
+    </if>
+    <if test="providerAddress != null  and providerAddress != ''" >
+      and provider_address like CONCAT('%',#{providerAddress},'%')
+    </if>
+	</select>
+  <select id="select" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_provider where 1 = 1
+    <if test="providerCode != null and providerCode != ''" >
+       and provider_code like CONCAT('%',#{providerCode},'%')
+    </if>
+    <if test="providerName != null  and providerName != ''" >
+      and provider_name like CONCAT('%',#{providerName},'%')
+    </if>
+    <if test="providerType != null  and providerType != ''" >
+      and provider_type like CONCAT('%',#{providerType},'%')
+    </if>
+    <if test="providerAddress != null  and providerAddress != ''" >
+      and provider_address like CONCAT('%',#{providerAddress},'%')
+    </if>
+    <if test="start != null">
+			limit ${start},
+		</if>
+		<if test="limit != null">
+			${limit}
+		</if>
+  </select>
+  <select id="queryComBo" resultType="java.util.Map" >
+    select provider_code as  "providerCode" , provider_name as "providerName"
+    from t_provider where 1 = 1
+  
+  </select>
+  
+  <update id="updateByPrimaryKey" parameterType="com.esy.entity.Provider" >
+    update t_provider
+    set provider_code = #{providerCode,jdbcType=VARCHAR},
+      provider_name = #{providerName,jdbcType=VARCHAR},
+      provider_type = #{providerType,jdbcType=VARCHAR},
+      provider_address = #{providerAddress,jdbcType=VARCHAR},
+      provider_phone1 = #{providerPhone1,jdbcType=VARCHAR},
+      provider_phone2 = #{providerPhone2,jdbcType=VARCHAR},
+      provider_phone3 = #{providerPhone3,jdbcType=VARCHAR},
+      create_name = #{createName,jdbcType=VARCHAR},
+      create_code = #{createCode,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      update_code = #{updateCode,jdbcType=VARCHAR},
+      update_name = #{updateName,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

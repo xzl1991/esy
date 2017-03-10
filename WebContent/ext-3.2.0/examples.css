@@ -1,0 +1,9 @@
+
+#msg-div {
+    position:absolute;
+    text-align:center;
+    left:35%;
+    top:10px;
+    width:250px;
+    z-index:20000;
+}

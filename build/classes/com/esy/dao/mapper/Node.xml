@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esy.dao.impl.NodeDao">
+	
+	<select id="queryCount" resultType="int" parameterType="java.util.Map">
+		select count(1) from t_node_tree where 1 = 1
+		<if test="pid != null and pid != ''">
+			and pid = #{pid}
+		</if>
+		<if test="id != null and id != ''">
+			and id = #{id}
+		</if>
+		<if test="ename != null and ename != ''">
+			and ename like CONCAT('%',#{ename},'%') 
+		</if>
+	</select>
+	<select id="findnode" resultType="java.util.Map" parameterType="java.util.Map">
+		select 
+		id as "id",
+		text as "text",
+		ename as "ename",
+		leaf as "leaf",
+		pid as "pid",
+		url as "url",
+		pcname as "pcname",
+		pename as "pename"
+		from t_node_tree where 1 = 1 
+		<if test="pid != null and pid != ''">
+			and pid = #{pid}
+		</if>
+		<if test="id != null and id != ''">
+			and id = #{id}
+		</if>
+		<if test="ename != null and ename != ''">
+			and ename like CONCAT('%',#{ename},'%') 
+		</if>
+		<if test="start != null">
+			limit ${start},
+		</if>
+		<if test="limit != null">
+			${limit}
+		</if>
+	</select>
+	<insert id="insertNode">
+		insert into t_node_tree (id,ename,leaf,pid,url, text, pcname, pename)
+		values (#{id},#{ename},#{leaf},#{pid},#{url}, #{text}, #{pcname}, #{pename})
+	</insert>
+	
+	<update id="updateNode">
+		update t_node_tree t 
+		set t.text = #{text},
+		t.ename = #{ename},
+		t.leaf = #{leaf},
+		t.url = #{url},
+		t.pid = #{pid},
+		t.pename = #{pename},
+		t.pcname = #{pcname}
+		where t.id = #{id}
+	</update>
+	
+	<delete id="deleteNode">
+		delete from t_node_tree  where id = #{id}
+	</delete>
+</mapper>

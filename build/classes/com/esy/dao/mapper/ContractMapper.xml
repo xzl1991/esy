@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.esy.dao.impl.ContractMapper">
+	<resultMap id="BaseResultMap" type="com.esy.entity.Contract">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="contract_code" property="contractCode"
+			jdbcType="VARCHAR" />
+		<result column="contract_date" property="contractDate"
+			jdbcType="VARCHAR" />
+		<result column="provider_code" property="providerCode"
+			jdbcType="VARCHAR" />
+		<result column="customer_code" property="customerCode"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List" >
+		id, contract_code, contract_date, provider_code,
+		customer_code
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from t_contract
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectcount" resultType="int" parameterType="java.util.Map">
+		select count(1) from t_contract where 1 = 1
+		<if test="contractCode != null and contractCode != '' ">
+			and contractCode = #{contractCode,jdbcType=VARCHAR}
+		</if>
+		<if test="contractDate != null  and contractDate != ''">
+			and contractDate = #{contractDate,jdbcType=VARCHAR}
+		</if>
+		<if test="providerCode != null and providerCode != ''">
+			and = #{providerCode,jdbcType=VARCHAR}
+		</if>
+		<if test="customerCode != null and customerCode != ''">
+			and customerCode = #{customerCode,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<select id="select" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from t_contract where 1 = 1
+		<if test="contractCode != null and contractCode != '' ">
+			and contractCode = #{contractCode,jdbcType=VARCHAR}
+		</if>
+		<if test="contractDate != null  and contractDate != ''">
+			and contractDate = #{contractDate,jdbcType=VARCHAR}
+		</if>
+		<if test="providerCode != null and providerCode != ''">
+			and = #{providerCode,jdbcType=VARCHAR}
+		</if>
+		<if test="customerCode != null and customerCode != ''">
+			and customerCode = #{customerCode,jdbcType=VARCHAR}
+		</if>
+		<if test="start != null and limit != null">
+			limit ${start},${limit}
+		</if>
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		t_contract
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.esy.entity.Contract">
+		insert into t_contract (id,
+		contract_code, contract_date,
+		provider_code, customer_code)
+		values
+		(#{id,jdbcType=VARCHAR}, #{contractCode,jdbcType=VARCHAR},
+		#{contractDate,jdbcType=VARCHAR},
+		#{providerCode,jdbcType=VARCHAR},
+		#{customerCode,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="updateByPrimaryKey" parameterType="com.esy.entity.Contract">
+		update t_contract
+		set contract_code = #{contractCode,jdbcType=VARCHAR},
+		contract_date =
+		#{contractDate,jdbcType=VARCHAR},
+		provider_code =
+		#{providerCode,jdbcType=VARCHAR},
+		customer_code =
+		#{customerCode,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

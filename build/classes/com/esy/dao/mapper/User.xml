@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esy.dao.impl.UserDao">
+	
+	<select id="querycount" resultType="int" parameterType="java.util.Map">
+		select 
+		count(1)
+		from t_user where 1 = 1
+		<if test="username != null and '' != username">
+			and username = #{username}
+		</if>
+		<if test="password != null and '' != password">
+			and password = #{password}
+		</if>
+	</select>
+	<select id="finduser" resultType="com.esy.entity.User" parameterType="java.util.Map">
+		select 
+		id as "id",
+		username as "username",
+		password as "password",
+		nickname as "nickname",
+		create_time as "createTime"
+		from t_user where 1 = 1
+		<if test="username != null and '' != username">
+			and username = #{username}
+		</if>
+		<if test="password != null and '' != password">
+			and password = #{password}
+		</if>
+		<if test="start != null">
+			limit ${start},
+		</if>
+		<if test="limit != null">
+			${limit}
+		</if>
+	</select>
+	
+	<insert id="insertUser">
+		insert into t_user (id,username,password,nickname,create_time)
+		values (#{id},#{username},#{password},#{nickname},#{createTime})
+	</insert>
+</mapper>
