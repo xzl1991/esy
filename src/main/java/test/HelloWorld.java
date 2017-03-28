@@ -1,0 +1,1 @@
+var ar=document.getElementsByTagName("iframe");for(var n in ar){var u=ar[n].src+"";ar[n].src = u.replace("/#","#");}
